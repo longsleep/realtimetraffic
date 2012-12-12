@@ -1,0 +1,34 @@
+html, body, ul, ol, li, form, fieldset, legend {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Ubuntu, Verdana, Tahoma, sans-serif;
+    background: white;
+}
+input {
+    padding: 4px;
+    border: solid 1px #E5E5E5;
+    outline: 0;
+    background: #FFFFFF;
+    margin-right: 9px;
+}  
+input:hover, input:focus {
+    border-color: #C9C9C9;
+}
+label {
+    padding-right: 9px;
+}
+#control button {
+    font-weight:bold;
+    cursor: pointer;
+}
+#control button.stop {
+    display: none;
+}
+#control.connected button.start {
+    display: none;
+}
+#control.connected button.stop {
+    display: inline;
+}

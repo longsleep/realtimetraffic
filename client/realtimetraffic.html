@@ -1,0 +1,37 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<title>Realtime traffic monitor</title>
+<link type="text/css" rel="stylesheet" href="css/base.css">
+<link type="text/css" rel="stylesheet" href="css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/legend.css">
+<link type="text/css" rel="stylesheet" href="css/detail.css">
+<script src="scripts/modernizr.js"></script>
+<script src="scripts/console-shim-min.js"></script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/jquery-ui.min.js"></script>
+<script src="scripts/jquery.ba-bbq.min.js"></script>
+<script src="scripts/d3.v2.min.js"></script>
+<script src="scripts/rickshaw.min.js"></script>
+<script src="scripts/realtimetraffic.js"></script>
+</head>
+
+<body>
+
+<div id="main" style="padding:4px">
+    <div id="control" style="padding:12px 5px">
+        <label for="input_url">URL</label><input style="width:400px" id="input_url" type="text" value=""/> <label for="input_interface">Interface</label><input type="text" id="input_interf" style="width:70px" value="eth0"/> <button class="start">Start</button><button class="stop">Stop</button>
+    </div>
+    <div id="chart"></div>
+    <div id="legend_container">
+        <div id="smoother" title="Smoothing"></div>
+        <div id="legend"></div>
+    </div>
+    <div id="slider"></div>
+</div>
+
+</body>
+
+</html>
+
+
