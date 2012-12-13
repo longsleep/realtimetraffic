@@ -2,7 +2,7 @@
 
 Realtime Traffic is a Linux realtime trafic monitoring tool, graphing rx and tx of a Linux network interface in realtime to any modern web browser supporting WebSockets and SVG, developed at [struktur AG](http://www.strukturag.com)
 
-![Screenshot](docs/screen4.png "Example Screenshot")
+![Screenshot](//github.com/longsleep/realtimetraffic/raw/master/doc/screen4.png "Example Screenshot")
 
 ## Getting Started
 
