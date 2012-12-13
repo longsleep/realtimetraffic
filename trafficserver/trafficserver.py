@@ -141,7 +141,7 @@ class ClientHandler(tornado.web.RequestHandler):
 def main(listen="127.0.0.1:8088"):
 
     from optparse import OptionParser
-    
+
     parser = OptionParser()
     parser.add_option("-l", "--listen", dest="listen", help="listen address (default: [%s])" % listen, default=listen)
     parser.add_option("--ssl_keyfile", dest="ssl_keyfile", help="SSL key file", metavar="FILE")
@@ -159,7 +159,7 @@ def main(listen="127.0.0.1:8088"):
         listen = "%s:%s" % (address, port)
 
     application = tornado.web.Application([
-        (r'^/ws$', WSHandler),
+        (r'^/realtimetraffic$', WSHandler),
         (r'^/css/(.*)$', tornado.web.StaticFileHandler, {'path': os.path.join(CLIENT_ROOT, 'css')}),
         (r'^/scripts/(.*)$', tornado.web.StaticFileHandler, {'path': os.path.join(CLIENT_ROOT, 'scripts')}),
         (r'^/img/(.*)$', tornado.web.StaticFileHandler, {'path': os.path.join(CLIENT_ROOT, 'img')}),
@@ -194,5 +194,5 @@ def main(listen="127.0.0.1:8088"):
 if __name__ == "__main__":
     status = main()
     sys.exit(status)
-    
+
 

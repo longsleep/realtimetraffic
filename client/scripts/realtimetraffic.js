@@ -1,14 +1,14 @@
 (function() {
 
     var RealtimeTraffic = function() {
-    
+
         this.tv = 500;
         this.last_data = null;
         this.connection = null;
         this.initialize();
-        
+
     }
-    
+
     RealtimeTraffic.prototype.initialize = function() {
 
         var graph = this.graph = new Rickshaw.Graph( {
@@ -21,7 +21,7 @@
                 timeInterval: this.tv,
                 maxDataPoints: 200,
                 timeBase: new Date().getTime() / 1000
-            }) 
+            })
         } );
 
         var xAxis = new Rickshaw.Graph.Axis.Time({
@@ -57,13 +57,13 @@
     };
 
     RealtimeTraffic.prototype.disconnect = function() {
-    
+
         if (this.connection) {
             this.connection.close();
             this.connection = this.last_data = null;
             this.needsReset = true;
         }
-    
+
     };
 
     RealtimeTraffic.prototype.connect = function(url, interf) {
@@ -71,13 +71,13 @@
         var ws_url = url+'?if='+interf;
 
         this.disconnect();
-        
+
         if (this.needsReset) {
             $("#chart").empty();
             $("#legend").empty();
             this.initialize();
         }
-        
+
         var connection;
         var that = this;
 
@@ -125,7 +125,7 @@
                 that.last_data = interface_data;
             }
         };
-        
+
     };
 
 $(document).ready(function() {
@@ -148,7 +148,19 @@ $(document).ready(function() {
         url = localStorage.getItem("org.longsleep.realtimetraffic.defaults.url");
         interf = localStorage.getItem("org.longsleep.realtimetraffic.defaults.interf");
     }
-    
+
+
+    // compute default URL based on current URL.
+    if (!url) {
+        if (/^((http|https):\/\/)/i.test(window.location.href)) {
+            if (/^(https:\/\/)/i.test(window.location.href)) {
+                url = "wss://"+window.location.host+"/realtimetraffic";
+            } else {
+                url = "ws://"+window.location.host+"/realtimetraffic";
+            }
+        }
+    }
+
     if (url) {
         input_url.val(url);
     }
@@ -169,18 +181,18 @@ $(document).ready(function() {
     $(realtimetraffic).on("close", function() {
         control.removeClass("connected");
     });
-    
+
     button_start.on("click", function() {
-    
+
         url = $.trim(input_url.val());
         interf = $.trim(input_interf.val());
-        
+
         if (!url || !interf) {
             return;
         }
-        
+
         realtimetraffic.connect(url, interf);
-        
+
         if (Modernizr.localstorage) {
             try {
                 localStorage.setItem("org.longsleep.realtimetraffic.defaults.url", url);
@@ -189,15 +201,15 @@ $(document).ready(function() {
                 console.warn("Failed to store settings into localStorage with error " + e);
             }
         }
-        
+
     });
-    
+
     button_stop.on("click", function() {
-    
+
         realtimetraffic.disconnect();
-    
+
     });
-    
+
     if (params.autostart === "1") {
         button_start.click();
     }
