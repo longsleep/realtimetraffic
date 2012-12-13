@@ -4,17 +4,61 @@ Realtime Traffic is a Linux realtime trafic monitoring tool, graphing rx and tx 
 
 ![Screenshot](//github.com/longsleep/realtimetraffic/raw/master/doc/screen4.png "Example Screenshot")
 
+## Installation
+
+Dowload the software, either using Git, or grab a [ZIP](https://github.com/longsleep/realtimetraffic/archive/master.zip) and extract it somewhere.
+
+You can use the client right away without installation. Just open the file client/realtimetraffic.html in any modern browser, type in a WebSocket address of a server you started somewhere and press start.
+
+To install the server, make sure you have [Python](http://www.python.org) (2.5, 2.6, 2.7 tested) and [tornado](http://pypi.python.org/pypi/tornado). For Python << 2.6 you also need [simplejson](http://pypi.python.org/pypi/simplejson). Then just startup the server.
+
+On Ubuntu this is simple like this:
+
+    $ wget -O rtt.zip https://github.com/longsleep/realtimetraffic/archive/master.zip
+    $ unzip rtt.zip
+    $ cd realtimetraffic-master
+    $ sudo apt-get install python-tornado
+    $ python trafficserver/trafficserver.py
+    Server running on 127.0.0.1:8088 (ssl:False) ...
+
+Now just open up your browser:
+
+    $ firefox http://127.0.0.1:8088/?autostart=1
+
 ## Getting Started
 
 Startup the traffice server on a Linux machine of your choice.
 
-```
-    python trafficserver/trafficserver.py
-```
+    $ python trafficserver/trafficserver.py
 
 And open up the server's web page (http://yourserver:8088/).
 
 See the usage information (--help) for options.
+
+## Options
+
+The trafficserver is basically a Websocket server pushing traffic data to any connected client.
+
+```
+    Usage: trafficserver.py [options]
+
+    Options:
+      -h, --help            show this help message and exit
+      -l LISTEN, --listen=LISTEN
+                            listen address (default: [127.0.0.1:8088])
+      --ssl_keyfile=FILE    SSL key file
+      --ssl_certfile=FILE   SSL certificate file
+```
+
+## Parameters
+
+The client default parameters can be configured by URL query parameters.
+
+```
+    url         The trafficserver Websocket URL.
+    interf      Inteface Name to capture the traffic (default eth0).
+    autostart   Automatically connect to server on launch.
+```
 
 ## Authors
 
