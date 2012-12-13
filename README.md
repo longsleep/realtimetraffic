@@ -35,29 +35,29 @@ And open up the server's web page (http://yourserver:8088/).
 
 See the usage information (--help) for options.
 
-## Options
+## Server usage options
 
 The trafficserver is basically a Websocket server pushing traffic data to any connected client.
 
 ```
-    Usage: trafficserver.py [options]
+Usage: trafficserver.py [options]
 
-    Options:
-      -h, --help            show this help message and exit
-      -l LISTEN, --listen=LISTEN
-                            listen address (default: [127.0.0.1:8088])
-      --ssl_keyfile=FILE    SSL key file
-      --ssl_certfile=FILE   SSL certificate file
+Options:
+  -h, --help            show this help message and exit
+  -l LISTEN, --listen=LISTEN
+                        listen address (default: [127.0.0.1:8088])
+  --ssl_keyfile=FILE    SSL key file
+  --ssl_certfile=FILE   SSL certificate file
 ```
 
-## Parameters
+## Client parameters
 
 The client default parameters can be configured by URL query parameters.
 
 ```
-    url         The trafficserver Websocket URL.
-    interf      Inteface Name to capture the traffic (default eth0).
-    autostart   Automatically connect to server on launch.
+url         The trafficserver Websocket URL.
+interf      Inteface Name to capture the traffic (default eth0).
+autostart   Automatically connect to server on launch.
 ```
 
 ## Authors
