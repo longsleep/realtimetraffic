@@ -17,10 +17,18 @@
 
 (function() {
 
+    var add = function(a, b) {
+        return a+b;
+    }
+
     var RealtimeTraffic = function() {
 
-        this.tv = 500;
+        this.tv = 1000;
         this.last_data = null;
+        this.history = {
+            rx_bytes: [],
+            tx_bytes: []
+        };
         this.connection = null;
         this.initialize();
 
@@ -33,10 +41,10 @@
             height: 300,
             width: 690,
             renderer: 'line',
-            interpolation: 'linear',
+            interpolation: 'basis',
             series: new Rickshaw.Series.FixedDuration([ { name: 'rx_tx_abs_diff', color: "palegreen" }, { name: 'rx_kbits', color: "mediumslateblue" }, { name: 'tx_kbits', color: "lightcoral" }], undefined, {
                 timeInterval: this.tv,
-                maxDataPoints: 200,
+                maxDataPoints: 100,
                 timeBase: new Date().getTime() / 1000
             })
         } );
@@ -126,14 +134,22 @@
 
         connection.onmessage = function(e) {
             var data = JSON.parse(e.data);
-            var interface_data = data[interf];
+            var interface_data = data[data.name];
             if (typeof(interface_data) !== "undefined") {
                 if (that.last_data !== null) {
+                    that.history.rx_bytes.push(interface_data.rx_bytes - that.last_data.rx_bytes);
+                    that.history.tx_bytes.push(interface_data.tx_bytes - that.last_data.tx_bytes);
                     var d = {
-                        rx_kbits: ((interface_data.rx_bytes - that.last_data.rx_bytes) * 8 / 1024)*2,
-                        tx_kbits: ((interface_data.tx_bytes - that.last_data.tx_bytes) * 8 / 1024)*2
+                        rx_kbits: (that.history.rx_bytes.reduce(add, 0) / that.history.rx_bytes.length) * 8 / 1024,
+                        tx_kbits: (that.history.tx_bytes.reduce(add, 0) / that.history.tx_bytes.length) * 8 / 1024
                     };
                     d.rx_tx_abs_diff = Math.abs(d.rx_kbits - d.tx_kbits);
+                    if (that.history.rx_bytes.length > 1) {
+                        that.history.rx_bytes.shift();
+                    }
+                    if (that.history.tx_bytes.length > 1) {
+                        that.history.tx_bytes.shift();
+                    }
                     setTimeout(function() {
                         that.graph.series.addData(d);
                         that.graph.render();
