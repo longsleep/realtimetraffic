@@ -41,10 +41,9 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
-	"log"
-	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -106,31 +105,4 @@ func (c *connection) writePump() {
 			}
 		}
 	}
-}
-
-func serveWs(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
-
-	// Read request details.
-	r.ParseForm()
-	iface := r.FormValue("if")
-	if iface == "" {
-		iface = "eth0"
-	}
-
-	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
-	if _, ok := err.(websocket.HandshakeError); ok {
-		http.Error(w, "Not a websocket handshake", 400)
-		return
-	} else if err != nil {
-		log.Println(err)
-		return
-	}
-	c := &connection{send: make(chan []byte, 256), ws: ws, iface: iface}
-	h.register <- c
-	go c.writePump()
-	c.readPump()
 }

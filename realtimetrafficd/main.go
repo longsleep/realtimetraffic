@@ -20,52 +20,68 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
-	"path"
-	"text/template"
+
+	"github.com/longsleep/realtimetraffic/client"
+
+	"github.com/gorilla/websocket"
 )
 
-var templates *template.Template
+var staticPath *string
+var listenAddr *string
 
 func serveClient(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.Error(w, "Not found", 404)
-		return
-	}
 	if r.Method != "GET" {
 		http.Error(w, "Method nod allowed", 405)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	err := templates.ExecuteTemplate(w, "realtimetraffic.html", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+	http.StripPrefix("/", client.HandlerFunc).ServeHTTP(w, r)
+}
+
+func serveWs(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", 405)
+		return
 	}
+
+	// Read request details.
+	r.ParseForm()
+	iface := r.FormValue("if")
+	if iface == "" {
+		iface = "eth0"
+	}
+
+	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
+	if _, ok := err.(websocket.HandshakeError); ok {
+		http.Error(w, "Not a websocket handshake", 400)
+		return
+	} else if err != nil {
+		log.Println(err)
+		return
+	}
+	c := &connection{send: make(chan []byte, 256), ws: ws, iface: iface}
+	h.register <- c
+	go c.writePump()
+	c.readPump()
 }
 
 func main() {
-
 	var err error
 
-	cwd, _ := os.Getwd()
-	client := flag.String("client", path.Join(cwd, "client"), "Full path to client directory.")
-	addr := flag.String("listen", "127.0.0.1:8088", "Listen address.")
-
-	templates, err = template.ParseGlob(path.Join(*client, "*.html"))
-	if err != nil {
-		log.Fatal("Failed to load templates: ", err)
-	}
+	staticPath = flag.String("client", "", "Full path to client directory.")
+	listenAddr = flag.String("listen", "127.0.0.1:8088", "Listen address.")
 
 	flag.Parse()
 	go h.run()
 	http.HandleFunc("/", serveClient)
 	http.HandleFunc("/realtimetraffic", serveWs)
-	http.Handle("/css/", http.FileServer(http.Dir(*client)))
+	/*http.Handle("/css/", http.FileServer(http.Dir(*client)))
 	http.Handle("/scripts/", http.FileServer(http.Dir(*client)))
 	http.Handle("/img/", http.FileServer(http.Dir(*client)))
 	http.Handle("/favicon.ico", http.FileServer(http.Dir(*client)))
+	*/
 
-	err = http.ListenAndServe(*addr, nil)
+	err = http.ListenAndServe(*listenAddr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
