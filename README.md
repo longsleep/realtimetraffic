@@ -1,12 +1,12 @@
 # Realtime Traffic
 
-Realtime Traffic is a Linux realtime trafic monitoring tool, graphing rx and tx of a Linux network interface in realtime to any modern web browser supporting WebSockets and SVG, developed at [struktur AG](http://www.strukturag.com)
+Realtime Traffic is a Linux realtime traffic monitoring tool, graphing rx and tx of a Linux network interface in realtime to any modern web browser supporting WebSockets and SVG, developed at [struktur AG](http://www.strukturag.com)
 
 ![Screenshot](https://github.com/longsleep/realtimetraffic/raw/master/doc/screen4.png "Example Screenshot")
 
 ## Installation
 
-Dowload the software, either using Git, or grab a [ZIP](https://github.com/longsleep/realtimetraffic/archive/master.zip) and extract it somewhere.
+Download the software, either using Git, or grab a [ZIP](https://github.com/longsleep/realtimetraffic/archive/master.zip) and extract it somewhere.
 
 Getting started:
 
@@ -36,9 +36,9 @@ Usage of ./bin/realtimetrafficd:
 The client default parameters can be configured by URL query parameters.
 
 ```
-url         The trafficserver Websocket URL.
-interf      Inteface Name to capture the traffic (default eth0).
-autostart   Automatically connect to server on launch.
+url=ws://...  The trafficserver Websocket URL (defaults to URL of local server)
+interf=eth0   Interhttp://localhost:8599/scripts/d3.v2.min.jsface Name to capture the traffic (default eth0).
+autostart=1   Automatically connect to server on launch (defaults to off).
 ```
 
 ## Authors
