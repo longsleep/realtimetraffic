@@ -20,9 +20,11 @@ dist_gopath: $(DIST_SRC)
 	if [ ! -d "$(SYSTEM_GOPATH)" ]; then find $(CURDIR)/vendor/src -mindepth 1 -maxdepth 1 -type d \
 		-exec ln -sf {} $(DIST_SRC) \; ; fi
 
-goget:
-#	if [ -z "$(DEB_BUILDING)" ]; then GOPATH=$(GOPATH) go get github.com/rogpeppe/godeps; fi
-#	if [ -z "$(DEB_BUILDING)" ]; then GOPATH=$(GOPATH) $(CURDIR)/vendor/bin/godeps -u dependencies.tsv; fi
+godeps:
+	if [ -z "$(DEB_BUILDING)" ]; then GOPATH=$(GOPATH) go get github.com/rogpeppe/godeps; fi
+
+goget: godeps
+	if [ -z "$(DEB_BUILDING)" ]; then GOPATH=$(GOPATH) $(CURDIR)/vendor/bin/godeps -u dependencies.tsv; fi
 	mkdir -p $(shell dirname "$(CURDIR)/vendor/src/$(GOPKG)")
 	rm -f $(CURDIR)/vendor/src/$(GOPKG)
 	ln -sf $(PWD) $(CURDIR)/vendor/src/$(GOPKG)
@@ -42,11 +44,11 @@ build: goget binary
 format:
 	find $(FOLDERS) \( -name "*.go" ! -name "bindata.go" \) -print0 | xargs -0 -n 1 go fmt
 
-dependencies.tsv:
+dependencies.tsv: godeps
 	set -e ;\
 	TMP=$$(mktemp -d) ;\
 	cp -r $(CURDIR)/vendor $$TMP ;\
-	GOPATH=$$TMP/vendor:$(CURDIR) $(CURDIR)/vendor/bin/godeps $(GOPKG)/wlan > $(CURDIR)/dependencies.tsv ;\
+	GOPATH=$$TMP/vendor:$(CURDIR) $(CURDIR)/vendor/bin/godeps $(GOPKG)/realtimetrafficd > $(CURDIR)/dependencies.tsv ;\
 	rm -rf $$TMP ;\
 
-.PHONY: all dist_gopath goget generate generate-dev binary dependencies.tsv
+.PHONY: all dist_gopath godeps goget generate generate-dev binary dependencies.tsv
