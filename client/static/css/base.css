@@ -3,16 +3,22 @@ html, body, ul, ol, li, form, fieldset, legend {
     padding: 0;
 }
 body {
-    font-family: Ubuntu, Verdana, Tahoma, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background: white;
 }
+
+#main {
+    margin: 0 auto;
+    width: 700px;
+}
+
 input {
     padding: 4px;
     border: solid 1px #E5E5E5;
     outline: 0;
     background: #FFFFFF;
     margin-right: 9px;
-}  
+}
 input:hover, input:focus {
     border-color: #C9C9C9;
 }
