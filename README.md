@@ -14,7 +14,7 @@ Getting started:
     $ unzip rtt.zip
     $ cd realtimetraffic-master
     $ make
-    $ ./bin/realtimetraffic
+    $ ./bin/realtimetrafficd
 
 Now just open up your browser:
 
@@ -27,7 +27,7 @@ See the usage information (-h) for options.
 The trafficserver is basically a Websocket server pushing traffic data to any connected client.
 
 ```
-Usage of ./bin/realtimetraffic:
+Usage of ./bin/realtimetrafficd:
   -listen="127.0.0.1:8088": Listen address.
 ```
 
