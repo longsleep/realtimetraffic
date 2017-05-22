@@ -17,25 +17,28 @@
 
 package main
 
+import (
+	"github.com/longsleep/realtimetraffic"
+)
+
 type hub struct {
-	grabbers    map[string]*grabber
+	grabbers    map[string]*realtimetraffic.Grabber
 	connections map[*connection]bool
-	broadcast   chan *interfacedata
+	broadcast   chan *realtimetraffic.Interfacedata
 	register    chan *connection
 	unregister  chan *connection
 }
 
 var h = hub{
-	broadcast:   make(chan *interfacedata),
+	broadcast:   make(chan *realtimetraffic.Interfacedata),
 	register:    make(chan *connection),
 	unregister:  make(chan *connection),
 	connections: make(map[*connection]bool),
-	grabbers:    make(map[string]*grabber),
+	grabbers:    make(map[string]*realtimetraffic.Grabber),
 }
 
 func (h *hub) run() {
-
-	var eg *grabber
+	var eg *realtimetraffic.Grabber
 	var ok bool
 
 	for {
@@ -43,20 +46,20 @@ func (h *hub) run() {
 		case c := <-h.register:
 			h.connections[c] = true
 			if eg, ok = h.grabbers[c.iface]; !ok {
-				eg = newGrabber(c.iface)
+				eg = realtimetraffic.NewGrabber(c.iface)
 				h.grabbers[c.iface] = eg
 			}
-			eg.start()
+			eg.Start(h.broadcast)
 		case c := <-h.unregister:
 			delete(h.connections, c)
 			close(c.send)
 			if eg, ok = h.grabbers[c.iface]; ok {
-				eg.stop()
+				eg.Stop()
 			}
 		case d := <-h.broadcast:
 			for c := range h.connections {
-				if c.iface == d.iface {
-					if m, err := d.encode(); err == nil {
+				if c.iface == d.Name() {
+					if m, err := d.JSON(); err == nil {
 						select {
 						case c.send <- m:
 						default:

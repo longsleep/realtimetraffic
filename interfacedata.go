@@ -15,25 +15,33 @@
  * limitations under the License.
  */
 
-package main
+package realtimetraffic
 
 import (
 	"encoding/json"
 )
 
-type interfacedata struct {
-	data  interface{}
+type Interfacedata struct {
+	data  map[string]interface{}
 	iface string
 }
 
-func (i *interfacedata) set(iface string, data interface{}) {
+func (i *Interfacedata) set(iface string, data interface{}) {
+	i.iface = iface
 	i.data = map[string]interface{}{
 		iface:  data,
 		"name": iface,
 	}
-	i.iface = iface
 }
 
-func (i *interfacedata) encode() ([]byte, error) {
+func (i *Interfacedata) Data() map[string]interface{} {
+	return i.data
+}
+
+func (i *Interfacedata) JSON() ([]byte, error) {
 	return json.Marshal(i.data)
+}
+
+func (i *Interfacedata) Name() string {
+	return i.iface
 }

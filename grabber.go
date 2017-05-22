@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package main
+package realtimetraffic
 
 import (
 	"fmt"
@@ -53,7 +53,7 @@ var grabkeys = []string{
 	"tx_window_errors",
 }
 
-type grabber struct {
+type Grabber struct {
 	path    string
 	iface   string
 	quit    chan bool
@@ -61,16 +61,15 @@ type grabber struct {
 	count   uint
 }
 
-func newGrabber(iface string) *grabber {
-	return &grabber{
+func NewGrabber(iface string) *Grabber {
+	return &Grabber{
 		iface: iface,
 		path:  fmt.Sprintf("/sys/class/net/%s/statistics", iface),
 	}
 }
 
-func (g *grabber) grab() {
-
-	data := &interfacedata{}
+func (g *Grabber) grab() *Interfacedata {
+	data := &Interfacedata{}
 	statistics := map[string]interface{}{}
 	value := make([]byte, 100)
 
@@ -79,14 +78,14 @@ func (g *grabber) grab() {
 	for _, key := range grabkeys {
 		file, err = os.Open(path.Join(g.path, key))
 		if err == nil {
-			count, err := file.Read(value)
-			if err == nil {
-				statistics[key], err = strconv.ParseInt(strings.TrimSpace(string(value[:count])), 10, 64)
-				if err != nil {
-					log.Println("Failed to process data", err, value[:count], count)
+			count, ferr := file.Read(value)
+			if ferr == nil {
+				statistics[key], ferr = strconv.ParseInt(strings.TrimSpace(string(value[:count])), 10, 64)
+				if ferr != nil {
+					log.Println("Failed to process data", ferr, value[:count], count)
 				}
 			} else {
-				log.Println("Failed to read data", err)
+				log.Println("Failed to read data", ferr)
 			}
 			file.Close()
 		} else {
@@ -95,12 +94,11 @@ func (g *grabber) grab() {
 	}
 
 	data.set(g.iface, statistics)
-	h.broadcast <- data
 
+	return data
 }
 
-func (g *grabber) start() {
-
+func (g *Grabber) Start(ch chan<- *Interfacedata) {
 	g.count++
 	if g.running {
 		return
@@ -115,18 +113,16 @@ func (g *grabber) start() {
 		for {
 			select {
 			case <-ticker.C:
-				g.grab()
+				ch <- g.grab()
 			case <-g.quit:
 				ticker.Stop()
 				return
 			}
 		}
 	}()
-
 }
 
-func (g *grabber) stop() {
-
+func (g *Grabber) Stop() {
 	if !g.running {
 		return
 	}
@@ -137,5 +133,4 @@ func (g *grabber) stop() {
 		close(g.quit)
 		fmt.Printf("Grabbing stopped: %s\n", g.iface)
 	}
-
 }
