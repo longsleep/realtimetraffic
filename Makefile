@@ -34,10 +34,10 @@ generate:
 generate-dev:
 	GOPATH=$(GOPATH) $(CURDIR)/vendor/bin/go-bindata -dev -prefix "client/static/" -pkg client -o client/bindata.go client/static/...; fi
 
-binary:
+binary: generate
 	GOPATH=$(GOPATH) go build -o bin/realtimetrafficd realtimetrafficd/*.go
 
-build: goget generate binary
+build: goget binary
 
 format:
 	find $(FOLDERS) \( -name "*.go" ! -name "bindata.go" \) -print0 | xargs -0 -n 1 go fmt
