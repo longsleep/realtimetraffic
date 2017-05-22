@@ -30,7 +30,7 @@ import (
 var listenAddr *string
 
 func serveClient(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "HEAD" {
 		http.Error(w, "Method nod allowed", 405)
 		return
 	}
