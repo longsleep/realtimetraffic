@@ -27,7 +27,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var staticPath *string
 var listenAddr *string
 
 func serveClient(w http.ResponseWriter, r *http.Request) {
@@ -69,22 +68,15 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 func main() {
 	var err error
 
-	staticPath = flag.String("client", "", "Full path to client directory.")
 	listenAddr = flag.String("listen", "127.0.0.1:8088", "Listen address.")
 
 	flag.Parse()
 	go h.run()
 	http.HandleFunc("/", serveClient)
 	http.HandleFunc("/realtimetraffic", serveWs)
-	/*http.Handle("/css/", http.FileServer(http.Dir(*client)))
-	http.Handle("/scripts/", http.FileServer(http.Dir(*client)))
-	http.Handle("/img/", http.FileServer(http.Dir(*client)))
-	http.Handle("/favicon.ico", http.FileServer(http.Dir(*client)))
-	*/
 
 	err = http.ListenAndServe(*listenAddr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
 }

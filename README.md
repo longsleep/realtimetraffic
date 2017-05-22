@@ -28,7 +28,6 @@ The trafficserver is basically a Websocket server pushing traffic data to any co
 
 ```
 Usage of ./bin/realtimetraffic:
-  -client="./client": Path to client directory.
   -listen="127.0.0.1:8088": Listen address.
 ```
 
