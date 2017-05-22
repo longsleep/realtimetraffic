@@ -40,9 +40,14 @@
             element: document.getElementById("chart"),
             height: 300,
             width: 690,
-            renderer: 'line',
-            interpolation: 'basis',
-            series: new Rickshaw.Series.FixedDuration([ { name: 'rx_tx_abs_diff', color: "palegreen" }, { name: 'rx_kbits', color: "mediumslateblue" }, { name: 'tx_kbits', color: "lightcoral" }], undefined, {
+            renderer: "multi",
+            interpolation: "cardinal",
+            series: new Rickshaw.Series.FixedDuration([
+                { name: 'rx_tx_abs_diff', color: "wheat", renderer: "bar" },
+                { name: 'rx_kbits', color: "mediumslateblue", renderer: "line" },
+                { name: 'tx_kbits', color: "lightcoral", renderer: "line" },
+                { name: 'rx_tx_combined', color: "mistyrose", renderer: "line" }
+            ], undefined, {
                 timeInterval: this.tv,
                 maxDataPoints: 100,
                 timeBase: new Date().getTime() / 1000
@@ -143,6 +148,7 @@
                         rx_kbits: (that.history.rx_bytes.reduce(add, 0) / that.history.rx_bytes.length) * 8 / 1024,
                         tx_kbits: (that.history.tx_bytes.reduce(add, 0) / that.history.tx_bytes.length) * 8 / 1024
                     };
+                    d.rx_tx_combined = d.rx_kbits + d.tx_kbits;
                     d.rx_tx_abs_diff = Math.abs(d.rx_kbits - d.tx_kbits);
                     if (that.history.rx_bytes.length > 1) {
                         that.history.rx_bytes.shift();
@@ -250,5 +256,3 @@ $(document).ready(function() {
 });
 
 }());
-
-
