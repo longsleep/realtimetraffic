@@ -43,10 +43,10 @@
             renderer: "multi",
             interpolation: "cardinal",
             series: new Rickshaw.Series.FixedDuration([
-                { name: 'rx_tx_abs_diff', color: "wheat", renderer: "bar" },
+                { name: 'rx_tx_abs_diff', color: "wheat", renderer: "bar", disabled: true },
+                { name: 'rx_tx_combined', color: "mistyrose", renderer: "line" },
                 { name: 'rx_kbits', color: "mediumslateblue", renderer: "line" },
                 { name: 'tx_kbits', color: "lightcoral", renderer: "line" },
-                { name: 'rx_tx_combined', color: "mistyrose", renderer: "line" }
             ], undefined, {
                 timeInterval: this.tv,
                 maxDataPoints: 100,
@@ -150,10 +150,10 @@
                     };
                     d.rx_tx_combined = d.rx_kbits + d.tx_kbits;
                     d.rx_tx_abs_diff = Math.abs(d.rx_kbits - d.tx_kbits);
-                    if (that.history.rx_bytes.length > 1) {
+                    if (that.history.rx_bytes.length >= 5) {
                         that.history.rx_bytes.shift();
                     }
-                    if (that.history.tx_bytes.length > 1) {
+                    if (that.history.tx_bytes.length >= 5) {
                         that.history.tx_bytes.shift();
                     }
                     setTimeout(function() {
