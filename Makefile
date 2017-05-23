@@ -48,25 +48,25 @@ binary-%: generate
 				-X main.Version=$(VERSION) \
 				-X main.BuildStamp=$(BUILDSTAMP) \
 			" \
-			-o bin/realtimetrafficd-$(GOARCH) realtimetrafficd/*.go
+			-o bin/realtimetrafficd_$(GOARCH) realtimetrafficd/*.go
 
 binary: binary-$(GOARCH)
-	mv bin/realtimetrafficd-$(GOARCH) bin/realtimetrafficd
+	cp -va bin/realtimetrafficd_$(GOARCH) bin/realtimetrafficd
 
 build: goget binary
 
-$(DIST)/realtimetrafficd-%: binary-$(GOARCH)
+$(DIST)/realtimetrafficd-$(VERSION)_%: binary-$(GOARCH)
 	@mkdir -p $(DIST)
-	if [ -n "$(UPX)" ]; then UPX= $(UPX) -f --brute -o $@ bin/realtimetrafficd-$(GOARCH); else cp -v bin/realtimetrafficd-$(GOARCH) $@; fi
+	if [ -n "$(UPX)" ]; then UPX= $(UPX) -f --brute -o $@ bin/realtimetrafficd_$(GOARCH); else cp -va bin/realtimetrafficd_$(GOARCH) $@; fi
 
 release-amd64:
-	$(MAKE) GOARCH=amd64 $(DIST)/realtimetrafficd-amd64
+	$(MAKE) GOARCH=amd64 $(DIST)/realtimetrafficd-$(VERSION)_amd64
 
 release-armhf:
-	$(MAKE) GOARCH=arm GOARM=7 $(DIST)/realtimetrafficd-armhf
+	$(MAKE) GOARCH=arm GOARM=7 $(DIST)/realtimetrafficd-$(VERSION)_armhf
 
 release-arm64:
-	$(MAKE) GOARCH=arm64 $(DIST)/realtimetrafficd-arm64
+	$(MAKE) GOARCH=arm64 $(DIST)/realtimetrafficd-$(VERSION)_arm64
 
 release: release-amd64 release-armhf release-arm64
 
