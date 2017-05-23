@@ -1,5 +1,8 @@
 PWD := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+UPX ?= $(shell command -v upx 2>/dev/null) # Make sure it is uxp 3.94 or higher (https://github.com/upx/upx/releases)
+GOARCH ?= $(shell go env GOARCH)
+
 GOPKG = github.com/longsleep/realtimetraffic
 GOPATH = "$(CURDIR)/vendor:$(CURDIR)"
 SYSTEM_GOPATH = /usr/share/gocode/src/
@@ -36,10 +39,28 @@ generate:
 generate-dev:
 	GOPATH=$(GOPATH) $(CURDIR)/vendor/bin/go-bindata -dev -prefix "client/static/" -pkg client -o client/bindata.go client/static/...; fi
 
-binary: generate
-	GOPATH=$(GOPATH) go build -o bin/realtimetrafficd realtimetrafficd/*.go
+binary-%: generate
+	GOPATH=$(GOPATH) GOOS=linux GOARCH=$(GOARCH) GOARM=$(GOARM) CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/realtimetrafficd-$(GOARCH) realtimetrafficd/*.go
+
+binary: binary-$(GOARCH)
+	mv bin/realtimetrafficd-$(GOARCH) bin/realtimetrafficd
 
 build: goget binary
+
+$(DIST)/realtimetrafficd-%: binary-$(GOARCH)
+	@mkdir -p $(DIST)
+	if [ -n "$(UPX)" ]; then UPX= $(UPX) -f --brute -o $@ bin/realtimetrafficd-$(GOARCH); else cp -v bin/realtimetrafficd-$(GOARCH) $@; fi
+
+release-amd64:
+	$(MAKE) GOARCH=amd64 $(DIST)/realtimetrafficd-amd64
+
+release-armhf:
+	$(MAKE) GOARCH=arm GOARM=7 $(DIST)/realtimetrafficd-armhf
+
+release-arm64:
+	$(MAKE) GOARCH=arm64 $(DIST)/realtimetrafficd-arm64
+
+release: release-amd64 release-armhf release-arm64
 
 format:
 	find $(FOLDERS) \( -name "*.go" ! -name "bindata.go" \) -print0 | xargs -0 -n 1 go fmt
@@ -51,4 +72,4 @@ dependencies.tsv: godeps
 	GOPATH=$$TMP/vendor:$(CURDIR) $(CURDIR)/vendor/bin/godeps $(GOPKG)/realtimetrafficd > $(CURDIR)/dependencies.tsv ;\
 	rm -rf $$TMP ;\
 
-.PHONY: all dist_gopath godeps goget generate generate-dev binary dependencies.tsv
+.PHONY: all dist_gopath godeps goget generate generate-dev binary dependencies.tsv build release

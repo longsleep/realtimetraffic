@@ -1,3 +1,4 @@
 /vendor
 /bin
+/dist
 /client/bindata.go
