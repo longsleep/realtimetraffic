@@ -6,6 +6,8 @@ GOARCH ?= $(shell go env GOARCH)
 GOPKG = github.com/longsleep/realtimetraffic
 GOPATH = "$(CURDIR)/vendor:$(CURDIR)"
 SYSTEM_GOPATH = /usr/share/gocode/src/
+VERSION = $(shell git describe --tags --dirty 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo git)
+BUILDSTAMP = $(shell date -u '+%Y-%m-%dT%T%z')
 
 DIST := $(PWD)/dist
 DIST_SRC := $(DIST)/src
@@ -40,7 +42,13 @@ generate-dev:
 	GOPATH=$(GOPATH) $(CURDIR)/vendor/bin/go-bindata -dev -prefix "client/static/" -pkg client -o client/bindata.go client/static/...; fi
 
 binary-%: generate
-	GOPATH=$(GOPATH) GOOS=linux GOARCH=$(GOARCH) GOARM=$(GOARM) CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/realtimetrafficd-$(GOARCH) realtimetrafficd/*.go
+	GOPATH=$(GOPATH) GOOS=linux GOARCH=$(GOARCH) GOARM=$(GOARM) CGO_ENABLED=0 \
+		go build \
+			-ldflags="-s -w \
+				-X main.Version=$(VERSION) \
+				-X main.BuildStamp=$(BUILDSTAMP) \
+			" \
+			-o bin/realtimetrafficd-$(GOARCH) realtimetrafficd/*.go
 
 binary: binary-$(GOARCH)
 	mv bin/realtimetrafficd-$(GOARCH) bin/realtimetrafficd

@@ -19,15 +19,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
+	"runtime"
 
 	"github.com/longsleep/realtimetraffic/client"
 
 	"github.com/gorilla/websocket"
 )
-
-var listenAddr *string
 
 func serveClient(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" && r.Method != "HEAD" {
@@ -68,15 +68,26 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 func main() {
 	var err error
 
-	listenAddr = flag.String("listen", "127.0.0.1:8088", "Listen address.")
-
+	listenAddr := flag.String("listen", "127.0.0.1:8088", "Listen address.")
+	versionFlag := flag.Bool("version", false, "Version")
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println("Version    :", Version)
+		fmt.Println("Build time :", BuildStamp)
+		fmt.Println("Go         :", runtime.Version())
+		return
+	}
+
 	go h.run()
 	http.HandleFunc("/", serveClient)
 	http.HandleFunc("/realtimetraffic", serveWs)
 
+	log.Printf("starting realtimetrafficd %s on %sn", Version, *listenAddr)
 	err = http.ListenAndServe(*listenAddr, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatal(err.Error())
 	}
+
+	defer log.Println("exiting")
 }
