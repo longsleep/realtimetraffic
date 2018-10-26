@@ -43,10 +43,11 @@ autostart=1   Automatically connect to server on launch (defaults to off).
 
 ## Authors
 
-This library was developed by Simon Eisenmann at [struktur AG](http://www.strukturag.com)
+This project was developed by Simon Eisenmann at [struktur AG](http://www.strukturag.com)
 
 ## License
 
+Copyright (C) 2018 Simon Eisenmann
 Copyright (C) 2012-2017 struktur AG
 
 Licensed under the Apache License, Version 2.0 (the "License");

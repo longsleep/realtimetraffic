@@ -1,6 +1,6 @@
 /*
+ * Copyright (C) 2018 Simon Eisenmann
  * Copyright (C) 2014-2017 struktur AG
- * http://www.strukturag.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
