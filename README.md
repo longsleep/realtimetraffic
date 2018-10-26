@@ -37,16 +37,17 @@ The client default parameters can be configured by URL query parameters.
 
 ```
 url=ws://...  The trafficserver Websocket URL (defaults to URL of local server)
-interf=eth0   Interhttp://localhost:8599/scripts/d3.v2.min.jsface Name to capture the traffic (default eth0).
+interf=eth0   Interface Name to capture the traffic (default eth0).
 autostart=1   Automatically connect to server on launch (defaults to off).
 ```
 
 ## Authors
 
-This library was developed by Simon Eisenmann at [struktur AG](http://www.strukturag.com)
+This project was developed by Simon Eisenmann at [struktur AG](http://www.strukturag.com)
 
 ## License
 
+Copyright (C) 2018 Simon Eisenmann
 Copyright (C) 2012-2017 struktur AG
 
 Licensed under the Apache License, Version 2.0 (the "License");
