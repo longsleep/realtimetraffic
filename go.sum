@@ -1,0 +1,6 @@
+github.com/elazarl/go-bindata-assetfs v1.0.0 h1:G/bYguwHIzWq9ZoyUQqrjTmJbbYn3j3CKKpKinvZLFk=
+github.com/elazarl/go-bindata-assetfs v1.0.0/go.mod h1:v+YaWX3bdea5J/mo8dSETolEo7R71Vk1u8bnjau5yw4=
+github.com/gorilla/websocket v0.0.0-20140218052210-119002ce0495 h1:RNs7p7jyGHgTpOAgO0ZdhQRgucB1WO2BHmFGMOhQzyk=
+github.com/gorilla/websocket v0.0.0-20140218052210-119002ce0495/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
+github.com/kevinburke/go-bindata v3.11.0+incompatible h1:GiPs9jxaG2xY1B5Dt/d/yHUOMlTk14uS35VcmHrdo4I=
+github.com/kevinburke/go-bindata v3.11.0+incompatible/go.mod h1:/pEEZ72flUW2p0yi30bslSp9YqD9pysLxunQDdb2CPM=
