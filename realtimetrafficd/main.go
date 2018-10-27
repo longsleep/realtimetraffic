@@ -83,7 +83,7 @@ func main() {
 	http.HandleFunc("/", serveClient)
 	http.HandleFunc("/realtimetraffic", serveWs)
 
-	log.Printf("starting realtimetrafficd %s on %sn", Version, *listenAddr)
+	log.Printf("starting realtimetrafficd %s on %s", Version, *listenAddr)
 	err = http.ListenAndServe(*listenAddr, nil)
 	if err != nil {
 		log.Fatal(err.Error())
